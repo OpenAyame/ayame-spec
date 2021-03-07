@@ -1,10 +1,13 @@
-# Ayame 仕様
-
+# WebRTC Signaling Server Ayame 仕様
 
 ## 概要
 
+これは WebRTC P2P で利用するためのシグナリングサーバ向けの仕様です。
+オープンソースとして公開されている https://github.com/OpenAyame/ayame はこの仕様に準拠して実装されています
+
+## 注意
+
 - 開発者向けの仕様書です
-- OpenAyame/ayame はこの仕様に準拠して実装されています
 
 ## シグナリング
 
