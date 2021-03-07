@@ -1,6 +1,10 @@
 # Ayame 仕様
 
-**開発者向けの仕様書です**
+
+## 概要
+
+- 開発者向けの仕様書です
+- OpenAyame/ayame はこの仕様に準拠して実装されています
 
 ## シグナリング
 
@@ -19,6 +23,7 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
 - SDP とは WebRTC の接続に必要な peer connection の 内部情報です。
     - [RFC 4566 \- SDP: Session Description Protocol](https://tools.ietf.org/html/rfc4566)
     - [Annotated Example SDP for WebRTC](https://tools.ietf.org/html/draft-ietf-rtcweb-sdp-11)
+
 
 ```
                   +-------------+          +-------------------+         +-------------+                      +-----------------------+
@@ -368,7 +373,7 @@ ice candidate を交換するメッセージです。
 
 **ayame.conf**
 
-```
+```yaml
 debug: true
 
 log_dir: .
