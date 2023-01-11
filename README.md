@@ -56,7 +56,8 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                      |  | "roomId": "...",          |                           |  |                                      |
                      |  | "clientId":"...",         |                           |  |                                      |
                      |  | "key":"...",              |                           |  |                                      |
-                     |  | "authnMetadata": "..."}   |                           |  |                                      |
+                     |  | "authnMetadata": "...",   |                           |  |                                      |
+                     |  | "standalone": false}      |                           |  |                                      |
                      +->|                           |                           |  |                                      |
                         |-------------------------->|                           |  |                                      |
                         |                           |POST /ayame/webhook/authn  |  |                                      |
@@ -81,7 +82,8 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
   isExistClient が false の場合は、                 |     "roomId": "...",      |  |                                      |
   offer を送らずに相手クライアントの                |     "clientId":"...",     |  |                                      |
   登録を待ちます        |                           |     "key":"...",          |  |                                      |
-                        |                           |     "authnMetadata":"..."}|<-+                                      |
+                        |                           |     "authnMetadata":"...",|<-+                                      |
+                        |                           |     "standalone": false}  |                                         |
                         |                           |<--------------------------|                                         |
                         |                           |POST /ayame/webhook/authn  |                                         |
                         |                           |{"roomId":"...",           |                                         |
@@ -173,6 +175,34 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         |                           |                           |                                         |
                         |                           |                           |                                         |
                         |                           |                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
+                  =================== 接続完了（{"type": "register", "standalone": true} の場合） ========                |
+                        |                           |                           |                                         |
+ 接続完了通知を受信すると WebSocket を切断します    |                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
+ peerConnection.iceConnectionState == "connected"   |                           |                                         |
+                        |                           |                           |                                         |
+                        |{"type":"connected"}       |                           |                                         |
+                        |-------------------------->|                           |                                         |
+                        |                           |                           |                                         |
+                        | Close Frame               |                           |                                         |
+                        |<--------------------------|                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           | peerConnection.iceConnectionState == "connected"
+                        |                           |                           |                                         |
+                        |                           |{"type":"connected"}       |                                         |
+                        |                           |<--------------------------|                                         |
+                        |                           |                           |                                         |
+                        |                           | Close Frame               |                                         |
+                        |                           |-------------------------->|                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |                                         |
 ```
 
 ### プロトコル
@@ -188,19 +218,27 @@ WS のメッセージはJSONフォーマットでやり取りします。
 - answer
 - candidate
 - bye
+- connected
 
 #### type: register
 
 クライアントが Ayame に対して roomId, clientId を登録するために利用するメッセージです。
 
 ```
-{type: "register", "roomId" "<string>", "clientId": "<string>"}
+{type: "register", "roomId" "<string>", "clientId": "<string>", "standalone", "<boolean>"}
 ```
 
 Ayame は register メッセージを受け取ったら、
 そのクライアントが指定した room に入室可能か検査して、可能であれば accept, 不可であれば reject を返却します。
 
 もし認証ウェブフックが有効になっている場合は、まずは認証を行います。
+
+standalone が true の場合は、クライアント同士が接続した後にシグナリングで使用している WebSocket を切断します。
+
+standalone が true の場合は、接続完了時に WebSocket を切断するため、ping をクライアントに送信しません。
+
+また、Ayame の roomId の管理もなくなるため、同一 roomId で複数の接続が可能になりますので、注意してください。
+
 
 #### type: accept
 
@@ -265,6 +303,17 @@ ice candidate を交換するメッセージです。
 これを受け取ったクライアントは RTCPeerConnection を閉じて、
 リモート(受信側)の video element を破棄する必要があります。
 
+#### type: connected
+
+クライアント同士が接続を完了したことを Aayame に通知するメッセージです。
+
+```
+{type: "connected"}
+```
+
+Ayame はこのメッセージを受信するとシグナリング用の WebSocket を切断します。
+
+
 ### シグナリング詳細
 
 - 積極的に拡張する
@@ -289,6 +338,9 @@ ice candidate を交換するメッセージです。
             - 互換性のため key も許可する
                 - 2020.2 で互換性はなくす
             - signalingKey と key 両方飛んできたら signalingKey を優先する
+        - standalone
+            - オプション？
+            - bool
 - 切断
     - type: bye
         - 1:1 のどちらかが切断したら飛ばす
