@@ -181,7 +181,8 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         |                           |                           |                                         |
                   =================== 接続完了（{"type": "register", "standalone": true} の場合） ========                |
                         |                           |                           |                                         |
- 接続完了通知を受信すると WebSocket を切断します    |                           |                                         |
+                        |                           |                           |                                         |
+                        |                   接続完了通知を受信すると WebSocket を切断します                               |
                         |                           |                           |                                         |
                         |                           |                           |                                         |
  peerConnection.iceConnectionState == "connected"   |                           |                                         |
@@ -192,14 +193,24 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         | Close Frame               |                           |                                         |
                         |<--------------------------|                           |                                         |
                         |                           |                           |                                         |
-                        |                           |                           |                                         |
-                        |                           |                           | peerConnection.iceConnectionState == "connected"
+                     +--|                           |                           |                                         |
+                     |  |                           |                           |                                         |
+                     |  |                           |                           |                                         |
+          WebSocket 関連の切断処理                  |                           |                                         |
+                     |  |                           |                           |                                         |
+                     |  |                           |                           |                                         |
+                     +->|                           |                           | peerConnection.iceConnectionState == "connected"
                         |                           |                           |                                         |
                         |                           |{"type":"connected"}       |                                         |
                         |                           |<--------------------------|                                         |
                         |                           |                           |                                         |
                         |                           | Close Frame               |                                         |
                         |                           |-------------------------->|                                         |
+                        |                           |                           |                                         |
+                        |                           |                           |--+                                      |
+                        |                           |                           |  |  WebSocket 関連の切断処理            |
+                        |                           |                           |  |                                      |
+                        |                           |                           |<-+                                      |
                         |                           |                           |                                         |
                         |                           |                           |                                         |
                         |                           |                           |                                         |
@@ -238,6 +249,8 @@ standalone が true の場合は、クライアント同士が接続した後に
 standalone が true の場合は、接続完了時に WebSocket を切断するため、ping をクライアントに送信しません。
 
 また、Ayame の roomId の管理もなくなるため、同一 roomId で複数の接続が可能になりますので、注意してください。
+
+接続を試みたクライアント同士の standalone が不一致の場合は切断します。
 
 
 #### type: accept
