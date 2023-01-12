@@ -339,7 +339,7 @@ Ayame はこのメッセージを受信するとシグナリング用の WebSock
                 - 2020.2 で互換性はなくす
             - signalingKey と key 両方飛んできたら signalingKey を優先する
         - standalone
-            - オプション？
+            - オプション
             - bool
 - 切断
     - type: bye
@@ -426,7 +426,7 @@ Ayame はこのメッセージを受信するとシグナリング用の WebSock
 
 ## 設定ファイル
 
-**ayame.conf**
+**ayame.yaml**
 
 ```yaml
 debug: true
