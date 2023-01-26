@@ -185,7 +185,7 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
                         |                   接続完了通知を受信すると WebSocket を切断します                               |
                         |                           |                           |                                         |
                         |                           |                           |                                         |
- peerConnection.iceConnectionState == "connected"   |                           |                                         |
+ peerConnection.connectionState == "connected"      |                           |                                         |
                         |                           |                           |                                         |
                         |{"type":"connected"}       |                           |                                         |
                         |-------------------------->|                           |                                         |
@@ -199,7 +199,7 @@ Ayame は WebSocket で接続しているクライアントのうちどれかか
           WebSocket 関連の切断処理                  |                           |                                         |
                      |  |                           |                           |                                         |
                      |  |                           |                           |                                         |
-                     +->|                           |                           | peerConnection.iceConnectionState == "connected"
+                     +->|                           |                           | peerConnection.connectionState == "connected"
                         |                           |                           |                                         |
                         |                           |{"type":"connected"}       |                                         |
                         |                           |<--------------------------|                                         |

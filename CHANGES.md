@@ -9,6 +9,11 @@
 - FIX
     - バグ修正
 
+## main
+
+- [ADD] standalone モード時の WebSocket の切断処理を追加する
+
+
 ## 2021.1
 
 **祝リリース**
