@@ -382,23 +382,25 @@ ice candidate を交換するメッセージです。
 
 ## 設定ファイル
 
-**ayame.conf**
+**config.ini**
 
-```yaml
-debug: true
+```ini
+debug = true
 
-log_dir: .
-log_name: ayame.log
-log_level: debug
+log_dir = .
+log_name = ayame.log
+log_level = debug
 
-signaling_log_name: signaling.log
-webhook_log_name: webhook.log
+signaling_log_name = signaling.log
+webhook_log_name = webhook.log
 
-listen_ipv4_address: 127.0.0.1
-listen_port_number: 3000
+type_message = false
 
-# authn_webhook_url: http://127.0.0.1:3001/authn_webhook_url
-# disconnect_webhook_url: http://127.0.0.1:3001/disconnect_webhook_url
-# webhook_request_timeout: 5
+listen_ipv4_address = 127.0.0.1
+listen_port_number = 3000
+
+# authn_webhook_url = http://127.0.0.1:3001/authn_webhook_url
+# disconnect_webhook_url = http://127.0.0.1:3001/disconnect_webhook_url
+# webhook_request_timeout = 5
 ```
 
