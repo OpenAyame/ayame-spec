@@ -389,7 +389,6 @@ debug = true
 
 log_dir = .
 log_name = ayame.log
-log_level = debug
 
 signaling_log_name = signaling.log
 webhook_log_name = webhook.log
